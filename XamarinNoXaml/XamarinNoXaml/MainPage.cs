@@ -14,6 +14,8 @@ namespace XamarinNoXaml
         Editor noteEditor;
         Label textLabel;
         Button saveButton, eraseButton;
+        ListView notesList;
+        List<string> notes;
 
         public MainPage()
         {
@@ -60,18 +62,23 @@ namespace XamarinNoXaml
                 FontSize = 20,
                 Margin = new Thickness(10)
             };
+
+            notesList = new ListView();
+            notes = new List<string>();
+            notesList.ItemsSource = notes;
         }
 
         private void EraseButton_Clicked(object sender, EventArgs e)
         {
             noteEditor.Text = "";
-            textLabel.Text = "";
+            //textLabel.Text = "";
         }
 
         private void SaveButton_Clicked(object sender, EventArgs e)
         {
-            textLabel.Text = noteEditor.Text;
+            notes.Add(noteEditor.Text);
             noteEditor.Text = "";
+            //textLabel.Text = noteEditor.Text;
         }
 
         private void InitializeUIGrid()
@@ -87,6 +94,7 @@ namespace XamarinNoXaml
                  new RowDefinition { Height = new GridLength(2.5,GridUnitType.Star) },
                  new RowDefinition { Height = new GridLength(1.5,GridUnitType.Star) },
                  new RowDefinition { Height = new GridLength(2,GridUnitType.Star) },
+                 new RowDefinition { Height = new GridLength(2,GridUnitType.Star) }
             };
 
             Grid grid = new Grid
@@ -100,6 +108,7 @@ namespace XamarinNoXaml
             grid.Children.Add(saveButton, 0, 2);
             grid.Children.Add(eraseButton, 1, 2);
             grid.Children.Add(textLabel, 0, 3);
+            grid.Children.Add(notesList, 0, 4);
             grid.Children.ForEach(c =>
             {
                 if(c is Button == false)
