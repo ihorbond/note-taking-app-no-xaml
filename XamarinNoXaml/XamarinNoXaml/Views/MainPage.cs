@@ -66,6 +66,8 @@ namespace XamarinNoXaml
                 ItemTemplate = new NotesTemplate()
             };
             notesList.SetBinding(ItemsView.ItemsSourceProperty, nameof(MainPageViewModel.Notes));
+            notesList.SetBinding(SelectableItemsView.SelectedItemProperty, nameof(MainPageViewModel.SelectedNote));
+            notesList.SetBinding(SelectableItemsView.SelectionChangedCommandProperty, nameof(MainPageViewModel.NoteSelectedCommand));
         }
 
         private void InitializeUIGrid()
