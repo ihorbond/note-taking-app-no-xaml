@@ -5,6 +5,8 @@ using System.Text;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using XamarinNoXaml.Models;
+using XamarinNoXaml.ViewModels;
 
 namespace XamarinNoXaml
 {
@@ -12,10 +14,8 @@ namespace XamarinNoXaml
     {
         Image codeSpaceImage;
         Editor noteEditor;
-        Label textLabel;
         Button saveButton, eraseButton;
-        ListView notesList;
-        List<string> notes;
+        CollectionView notesList;
 
         public MainPage()
         {
@@ -26,6 +26,8 @@ namespace XamarinNoXaml
         private void InitializeUIElements()
         {
             BackgroundColor = Color.PowderBlue;
+
+            BindingContext = new MainPageViewModel();
 
             codeSpaceImage = new Image
             {
@@ -38,47 +40,32 @@ namespace XamarinNoXaml
                 BackgroundColor = Color.White,
                 Margin = new Thickness(10)
             };
+            noteEditor.SetBinding(Editor.TextProperty, nameof(MainPageViewModel.NoteText));
 
             saveButton = new Button
             {
                 Text = "Save",
                 TextColor = Color.White,
                 BackgroundColor = Color.Green,
-                Margin = new Thickness(10)
+                Margin = new Thickness(5),
             };
-            saveButton.Clicked += SaveButton_Clicked;
+            saveButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.SaveCommand));
 
             eraseButton = new Button
             {
                 Text = "Erase",
                 TextColor = Color.White,
                 BackgroundColor = Color.Red,
-                Margin = new Thickness(10)
+                Margin = new Thickness(5)
             };
-            eraseButton.Clicked += EraseButton_Clicked;
+            eraseButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.EraseCommand));
 
-            textLabel = new Label
+            notesList = new CollectionView
             {
-                FontSize = 20,
-                Margin = new Thickness(10)
+                SelectionMode = SelectionMode.Single,
+                ItemTemplate = new NotesTemplate()
             };
-
-            notesList = new ListView();
-            notes = new List<string>();
-            notesList.ItemsSource = notes;
-        }
-
-        private void EraseButton_Clicked(object sender, EventArgs e)
-        {
-            noteEditor.Text = "";
-            //textLabel.Text = "";
-        }
-
-        private void SaveButton_Clicked(object sender, EventArgs e)
-        {
-            notes.Add(noteEditor.Text);
-            noteEditor.Text = "";
-            //textLabel.Text = noteEditor.Text;
+            notesList.SetBinding(ItemsView.ItemsSourceProperty, nameof(MainPageViewModel.Notes));
         }
 
         private void InitializeUIGrid()
@@ -91,9 +78,8 @@ namespace XamarinNoXaml
             var rows = new RowDefinitionCollection()
             {
                  new RowDefinition { Height = new GridLength(1,GridUnitType.Star) },
-                 new RowDefinition { Height = new GridLength(2.5,GridUnitType.Star) },
                  new RowDefinition { Height = new GridLength(1.5,GridUnitType.Star) },
-                 new RowDefinition { Height = new GridLength(2,GridUnitType.Star) },
+                 new RowDefinition { Height = new GridLength(1,GridUnitType.Star) },
                  new RowDefinition { Height = new GridLength(2,GridUnitType.Star) }
             };
 
@@ -107,8 +93,7 @@ namespace XamarinNoXaml
             grid.Children.Add(noteEditor, 0, 1);
             grid.Children.Add(saveButton, 0, 2);
             grid.Children.Add(eraseButton, 1, 2);
-            grid.Children.Add(textLabel, 0, 3);
-            grid.Children.Add(notesList, 0, 4);
+            grid.Children.Add(notesList, 0, 3);
             grid.Children.ForEach(c =>
             {
                 if(c is Button == false)
@@ -116,6 +101,32 @@ namespace XamarinNoXaml
             });
 
             Content = grid;
+        }
+    }
+
+    class NotesTemplate : DataTemplate
+    {
+        public NotesTemplate() : base(LoadTemplate)
+        {
+
+        }
+
+        static StackLayout LoadTemplate()
+        {
+            var textLabel = new Label();
+            textLabel.SetBinding(Label.TextProperty, nameof(NoteModel.Text));
+
+            var frame = new Frame
+            {
+                VerticalOptions = LayoutOptions.Center,
+                Content = textLabel
+            };
+
+            return new StackLayout
+            {
+                Children = { frame },
+                Padding = new Thickness(10, 10)
+            };
         }
     }
 }
