@@ -29,7 +29,13 @@ namespace XamarinNoXaml.Views
                 TextColor = Color.White,
                 FontSize = 20
             };
-            backButton.SetBinding(Button.CommandProperty, nameof(DetailsPageViewModel.BackButtonCommand));
+            backButton.SetBinding(Button.CommandProperty, nameof(DetailsPageViewModel.GoBackCommand));
+
+            var downSwipeGestureRecognizer = new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Down
+            };
+            downSwipeGestureRecognizer.SetBinding(SwipeGestureRecognizer.CommandProperty, nameof(DetailsPageViewModel.GoBackCommand));
 
             var stackLayout = new StackLayout
             {
@@ -37,6 +43,7 @@ namespace XamarinNoXaml.Views
             };
             stackLayout.Children.Add(textLabel);
             stackLayout.Children.Add(backButton);
+            stackLayout.GestureRecognizers.Add(downSwipeGestureRecognizer);
 
             Content = stackLayout;
         }

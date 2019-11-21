@@ -15,6 +15,7 @@ namespace XamarinNoXaml.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<NoteModel> Notes { get; }
 
+        public Command ShowWeatherCommand { get; }
         public Command SaveCommand { get; }
         public Command EraseCommand { get; }
         public Command NoteSelectedCommand { get; }
@@ -25,8 +26,6 @@ namespace XamarinNoXaml.ViewModels
             {
                 noteText = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NoteText)));
-
-                //SaveCommand.ChangeCanExecute();
             }
         }
 
@@ -63,6 +62,12 @@ namespace XamarinNoXaml.ViewModels
                 
             });
 
+            ShowWeatherCommand = new Command(async() =>
+            {
+                var weatherDataViewModel = new WeatherDataViewModel();
+                await Application.Current.MainPage.Navigation.PushModalAsync(new WeatherPage(weatherDataViewModel));
+            });
+
             EraseCommand = new Command(() =>
             {
                 NoteText = String.Empty;
@@ -78,7 +83,7 @@ namespace XamarinNoXaml.ViewModels
                     NoteText = SelectedNote.Text
                 };
 
-                await Application.Current.MainPage.Navigation.PushAsync(new DetailsPage(detailsPageViewModel));
+                await Application.Current.MainPage.Navigation.PushModalAsync(new DetailsPage(detailsPageViewModel));
 
                 SelectedNote = null;
             });

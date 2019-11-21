@@ -7,6 +7,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using XamarinNoXaml.Models;
 using XamarinNoXaml.ViewModels;
+using XamarinNoXaml.Views;
 
 namespace XamarinNoXaml
 {
@@ -31,8 +32,11 @@ namespace XamarinNoXaml
 
             codeSpaceImage = new Image
             {
-                Source = "codespace.png"
+                Source = "codespace.png",
             };
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.SetBinding(TapGestureRecognizer.CommandProperty, nameof(MainPageViewModel.ShowWeatherCommand));
+            codeSpaceImage.GestureRecognizers.Add(tapGestureRecognizer);
 
             noteEditor = new Editor
             {

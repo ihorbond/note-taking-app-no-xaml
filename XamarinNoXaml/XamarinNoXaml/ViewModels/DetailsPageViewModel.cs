@@ -9,7 +9,7 @@ namespace XamarinNoXaml.ViewModels
 {
     public class DetailsPageViewModel : INotifyPropertyChanged
     {
-        public ICommand BackButtonCommand { get; }
+        public ICommand GoBackCommand { get; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string noteText;
@@ -25,9 +25,9 @@ namespace XamarinNoXaml.ViewModels
 
         public DetailsPageViewModel()
         {
-            BackButtonCommand = new Command(async () =>
+            GoBackCommand = new Command(async () =>
             {
-                await Application.Current.MainPage.Navigation.PopAsync();
+                await Application.Current.MainPage.Navigation.PopModalAsync();
             });
         }
     }
